@@ -1401,10 +1401,13 @@ signaled condition to OUT-STREAM."
                                  "Log in"
                                  :end-html "<a href=\"/reset-password\">Forgot password</a>")
                     (output-form out-stream "post" (format nil "/login~@[?return=~A~]" (if return (url-rewrite:url-encode return))) "signup-form" "Create account" csrf-token
-                                 '(("signup-username" "Username" "text" "username")
+                                 `(("signup-username" "Username" "text" "username")
                                    ("signup-email" "Email" "text" "email")
                                    ("signup-password" "Password" "password" "new-password")
-                                   ("signup-password2" "Confirm password" "password" "new-password"))
+                                   ("signup-password2" "Confirm password" "password" "new-password")
+				   ,(if (typep *current-backend* 'backend-accordius) ; TODO: Use backend-invite
+				       '("signup-invite" "Invite Code" "text" "invite")
+				       nil))
                                  "Create account")
                     (if-let (main-site-title (main-site-title *current-site*))
 			    (format out-stream "<div class=\"login-tip\"><span>Tip:</span> You can log in with the same username and password that you use on ~A~:*. Creating an account here also creates one on ~A.</div>"
