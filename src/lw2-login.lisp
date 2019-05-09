@@ -94,7 +94,7 @@
 		       ("algorithm" . "sha-256")))))))
      (parse-login-result result))))
 
-(define-backend-function do-lw2-create-user (username email password)
+(define-backend-function do-lw2-create-user (username email password &key invite)
   (backend-websocket-login
    (let ((result (do-lw2-sockjs-method "createUser"
 		   `((("username" . ,username)

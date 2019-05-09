@@ -1387,7 +1387,8 @@ signaled condition to OUT-STREAM."
 
 (define-page view-login "/login" (return cookie-check
                                          (csrf-token :request-type :post) (login-username :request-type :post) (login-password :request-type :post)
-                                         (signup-username :request-type :post) (signup-email :request-type :post) (signup-password :request-type :post) (signup-password2 :request-type :post))
+                                         (signup-username :request-type :post) (signup-email :request-type :post) (signup-password :request-type :post) (signup-password2 :request-type :post)
+					 (signup-invite :request-type :post))
   (labels
     ((emit-login-page (&key error-message)
        (let ((csrf-token (make-csrf-token)))
@@ -1444,7 +1445,7 @@ signaled condition to OUT-STREAM."
            (emit-login-page :error-message "Please fill in all fields"))
           ((not (string= signup-password signup-password2))
            (emit-login-page :error-message "Passwords do not match"))
-          (t (multiple-value-call #'finish-login signup-username (do-lw2-create-user signup-username signup-email signup-password)))))
+          (t (multiple-value-call #'finish-login signup-username (do-lw2-create-user signup-username signup-email signup-password :invite signup-invite)))))
       (t
        (emit-login-page))))) 
 

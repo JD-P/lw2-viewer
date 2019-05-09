@@ -81,10 +81,14 @@
          (expiration (truncate (* 1000 (cdr (assoc :expiration response))))))
     (values user-id auth-token nil expiration)))
 
-(define-backend-operation do-lw2-create-user backend-accordius (username email password)
-  ;; TODO: Add actual code
-  (let (user-id auth-token error-message expiration)
-    (values user-id auth-token error-message expiration)))
+(define-backend-operation do-lw2-create-user backend-accordius (username email password &key invite)
+			  (drakma:http-request
+			   (quri:render-uri (quri:merge-uris (quri:make-uri :path "users/" :query "") (quri:uri (rest-api-uri *current-backend*))))
+			   :method :post
+			   :parameters `(("username" . ,username) ("email" . ,email) ("password" . ,password) ("code" . ,invite))
+			   )
+			  (let (user-id auth-token error-message expiration)
+			    (values user-id auth-token error-message expiration)))
 
 (define-backend-operation do-lw2-forgot-password backend-accordius (email)
   ;; TODO: Add actual code
